@@ -26,11 +26,9 @@
   (proxy [CompletionHandler] []
     (completed
       [n a]
-      (println "write-handler completed")
-      (println "n:" n "a:" a))
+      nil)
     (failed
       [e a]
-      (println "write-handler failed")
       (.printStackTrace ^Throwable e))))
 
 (declare read)
@@ -41,14 +39,11 @@
     (completed
       [n rbuf]
       (read asc)
-      (println "read-handler completed")
-      (println "n:" n "rbuf:" (seq (.array rbuf)))
       (let [wbuf (.duplicate rbuf)]
         (.rewind wbuf)
         (.write asc wbuf nil (write-handler asc))))
     (failed
       [e rbuf]
-      (println "read-handler failed")
       (.printStackTrace ^Throwable e))))
 
 (defn read
@@ -59,22 +54,18 @@
 (declare accept)
 
 (defn accept-handler
-  "Inside the CompletionHandler, AsynchronousSocketChannel"
   [assc]
   (proxy [CompletionHandler] []
     (completed
       [asc a]
       (accept assc)
-      (println "accept-handler completed")
       (read asc))
     (failed
       [e a]
       (accept assc)
-      (println "accept-handler failed")
       (.printStackTrace ^Throwable e))))
 
 (defn accept
   "Accepts an AsynchronousServerSocketChannel. Returns nil."
   [assc]
-  (println "accept")
   (.accept assc nil (accept-handler assc)))

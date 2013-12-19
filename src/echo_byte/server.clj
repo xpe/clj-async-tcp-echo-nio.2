@@ -21,26 +21,26 @@
         sa (core/socket-address host port)]
     (.bind assc sa)))
 
-(declare read)
-
 (defn write-handler
   [asc]
   (proxy [CompletionHandler] []
     (completed
       [n a]
       (println "write-handler completed")
-      (println "n:" n "a:" a)
-      (read asc))
+      (println "n:" n "a:" a))
     (failed
       [e a]
       (println "write-handler failed")
       (.printStackTrace ^Throwable e))))
+
+(declare read)
 
 (defn read-handler
   [asc]
   (proxy [CompletionHandler] []
     (completed
       [n rbuf]
+      (read asc)
       (println "read-handler completed")
       (println "n:" n "rbuf:" (seq (.array rbuf)))
       (let [wbuf (.duplicate rbuf)]

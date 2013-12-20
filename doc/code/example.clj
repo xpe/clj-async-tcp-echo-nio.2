@@ -1,10 +1,10 @@
-; wireshark-qt
+; wireshark filter:
 ; tcp.port eq 9500
 
-; server connection
-(def sc (server/bind "127.0.0.1" 9500))
-(server/accept sc)
+; server
+(def s (server/bind "127.0.0.1" 9500))
+(server/accept s)
 
-; client connection
-(def cc (client/connect "127.0.0.1" 9500))
-(time (client/write cc (core/rand-byte-buffer 100000)))
+; client
+(def c (client/connect "127.0.0.1" 9500))
+(time (client/write c (core/rand-byte-buffer 10000)))

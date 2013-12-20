@@ -21,24 +21,23 @@
         sa (core/socket-address host port)]
     (.bind assc sa)))
 
+(declare read)
+
 (defn write-handler
   [asc]
   (proxy [CompletionHandler] []
     (completed
       [n a]
-      nil)
+      (read asc))
     (failed
       [e a]
       (.printStackTrace ^Throwable e))))
-
-(declare read)
 
 (defn read-handler
   [asc]
   (proxy [CompletionHandler] []
     (completed
       [n rbuf]
-      (read asc)
       (let [wbuf (.duplicate rbuf)]
         (.rewind wbuf)
         (.write asc wbuf nil (write-handler asc))))

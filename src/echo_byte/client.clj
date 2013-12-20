@@ -4,7 +4,6 @@
   Abbreviations:
   a    = attachment
   asc  = AsynchronousSocketChannel
-  assc = AsynchronousServerSocketChannel
   n    = number of bytes
   sa   = socket address (InetSocketAddress)"
   (:refer-clojure :exclude (read))
@@ -19,12 +18,8 @@
 (defn connect-handler
   []
   (proxy [CompletionHandler] []
-    (completed
-      [_ a]
-      nil)
-    (failed
-      [e a]
-      (.printStackTrace ^Throwable e))))
+    (completed [_ a] nil)
+    (failed [e a] (.printStackTrace ^Throwable e))))
 
 (defn connect
   "Returns a AsynchronousSocketChannel to host and port."
@@ -38,14 +33,11 @@
 (defn read-handler
   [asc]
   (proxy [CompletionHandler] []
-    (completed
-      [n buf]
-      (read asc)
-      (let [coll (seq (.array ^ByteBuffer buf))]
-          (print (format "%d " (first coll)))))
-    (failed
-      [e buf]
-      (.printStackTrace ^Throwable e))))
+    (completed [n buf]
+               (read asc)
+               (let [coll (seq (.array ^ByteBuffer buf))]
+                 (print (format "%d " (first coll)))))
+    (failed [e buf] (.printStackTrace ^Throwable e))))
 
 (defn read
   [^AsynchronousSocketChannel asc]
@@ -55,12 +47,8 @@
 (defn write-handler
   [asc]
   (proxy [CompletionHandler] []
-    (completed
-      [r a]
-      (read asc))
-    (failed
-      [e a]
-      (.printStackTrace ^Throwable e))))
+    (completed [r a] (read asc))
+    (failed [e a] (.printStackTrace ^Throwable e))))
 
 (defn write
   "Sends a ByteBuffer (buf) to connection. Returns nil."

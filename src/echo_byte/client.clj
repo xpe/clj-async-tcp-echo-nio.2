@@ -1,4 +1,12 @@
 (ns echo-byte.client
+  "Client code, using Java 7 NIO.2.
+
+  Abbreviations:
+  a    = attachment
+  asc  = AsynchronousSocketChannel
+  assc = AsynchronousServerSocketChannel
+  n    = number of bytes
+  sa   = socket address (InetSocketAddress)"
   (:refer-clojure :exclude (read))
   (:require
     [echo-byte.core :as core])
@@ -12,13 +20,14 @@
   []
   (proxy [CompletionHandler] []
     (completed
-      [r a]
+      [_ a]
       nil)
     (failed
       [e a]
       (.printStackTrace ^Throwable e))))
 
 (defn connect
+  "Returns a AsynchronousSocketChannel to host and port."
   [host port]
   (let [sa (core/socket-address host port)]
     (doto (AsynchronousSocketChannel/open)
@@ -54,6 +63,6 @@
       (.printStackTrace ^Throwable e))))
 
 (defn write
-  "Sends a ByteBuffer (buf) to connection. Returns"
+  "Sends a ByteBuffer (buf) to connection. Returns nil."
   [^AsynchronousSocketChannel asc buf]
   (.write asc buf nil (write-handler asc)))

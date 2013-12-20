@@ -5,6 +5,7 @@
   a    = attachment
   asc  = AsynchronousSocketChannel
   assc = AsynchronousServerSocketChannel
+  n    = number of bytes
   sa   = socket address (InetSocketAddress)"
   (:refer-clojure :exclude (read))
   (:require

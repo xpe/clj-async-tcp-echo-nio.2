@@ -11,3 +11,13 @@
   (-> (map byte coll)
       (byte-array)
       (java.nio.ByteBuffer/wrap)))
+
+(defn rand-byte
+  []
+  (byte (- (rand-int 256) 128)))
+
+(defn rand-byte-buffer
+  [n]
+  (-> (repeatedly n rand-byte)
+      (byte-array)
+      (java.nio.ByteBuffer/wrap)))

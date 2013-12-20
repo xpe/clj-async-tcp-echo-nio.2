@@ -1,13 +1,10 @@
 (ns echo-byte.client
-  (:refer-clojure :exclude (send))
+  (:refer-clojure :exclude (read))
   (:require
     [echo-byte.core :as core])
   (:import
-    [java.nio
-     ByteBuffer]
-    [java.nio.channels
-     AsynchronousSocketChannel
-     CompletionHandler]))
+    [java.nio ByteBuffer]
+    [java.nio.channels AsynchronousSocketChannel CompletionHandler]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,11 +13,9 @@
   (proxy [CompletionHandler] []
     (completed
       [r a]
-      (println "connect-handler completed")
-      )
+      nil)
     (failed
       [e a]
-      (println "connect-handler failed")
       (.printStackTrace ^Throwable e))))
 
 (defn connect
@@ -29,18 +24,36 @@
     (doto (AsynchronousSocketChannel/open)
       (.connect sa nil (connect-handler)))))
 
-(defn send-handler
-  [ch]
+(declare read)
+
+(defn read-handler
+  [asc]
+  (proxy [CompletionHandler] []
+    (completed
+      [n buf]
+      (read asc)
+      (let [coll (seq (.array ^ByteBuffer buf))]
+          (print (format "%d " (first coll)))))
+    (failed
+      [e buf]
+      (.printStackTrace ^Throwable e))))
+
+(defn read
+  [^AsynchronousSocketChannel asc]
+  (let [buf (ByteBuffer/allocate 1)]
+    (.read asc buf buf (read-handler asc))))
+
+(defn write-handler
+  [asc]
   (proxy [CompletionHandler] []
     (completed
       [r a]
-      (println "send-handler completed"))
+      (read asc))
     (failed
       [e a]
-      (println "send-handler failed")
       (.printStackTrace ^Throwable e))))
 
-(defn send
+(defn write
   "Sends a ByteBuffer (buf) to connection. Returns"
-  [^AsynchronousSocketChannel ch buf]
-  (.write ch buf nil (send-handler ch)))
+  [^AsynchronousSocketChannel asc buf]
+  (.write asc buf nil (write-handler asc)))

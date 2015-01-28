@@ -1,7 +1,7 @@
 clj-async-tcp-echo-nio.2
 ========================
 
-An asynchrononous TCP echo client/server in Clojure using Java 7 NIO.2.
+An asynchronous TCP echo client/server in Clojure using Java 7 NIO.2.
 
 The Java documentation is thorough, if not necessarily the best source of
 examples. You can get the background you need with

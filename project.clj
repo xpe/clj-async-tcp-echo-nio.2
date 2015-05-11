@@ -1,4 +1,4 @@
-(defproject echo-byte "0.1.0-SNAPSHOT"
+(defproject echo-byte "0.1.0"
   :description "Basic TCP echo client/server in Clojure using Java 7 NIO.2"
   :url "https://github.com/bluemont/clj-async-tcp-echo-nio.2"
   :license {:name "Eclipse Public License"

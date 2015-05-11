@@ -9,7 +9,7 @@
   sa   = socket address (InetSocketAddress)"
   (:refer-clojure :exclude (read))
   (:require
-    [echo-byte.core :as core])
+   [echo-byte.core :as core])
   (:import
     [java.nio ByteBuffer]
     [java.nio.channels AsynchronousSocketChannel

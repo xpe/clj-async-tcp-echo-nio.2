@@ -1,6 +1,6 @@
 (ns echo-byte.core
   (:import
-    [java.net InetSocketAddress]))
+   [java.net InetSocketAddress]))
 
 (defn socket-address
   "Returns a InetSocketAddress for supplied host and port."

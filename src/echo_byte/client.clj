@@ -8,18 +8,25 @@
   sa   = socket address (InetSocketAddress)"
   (:refer-clojure :exclude (read))
   (:require
-    [echo-byte.core :as core])
+   [echo-byte.core :as core])
   (:import
-    [java.nio ByteBuffer]
-    [java.nio.channels AsynchronousSocketChannel CompletionHandler]))
+   [java.nio
+    ByteBuffer]
+   [java.nio.channels
+    AsynchronousSocketChannel
+    CompletionHandler]))
 
 (set! *warn-on-reflection* true)
 
 (defn connect-handler
   []
   (proxy [CompletionHandler] []
-    (completed [_ a] nil)
-    (failed [e a] (.printStackTrace ^Throwable e))))
+    (completed
+      [_ a]
+      nil)
+    (failed
+      [e a]
+      (.printStackTrace ^Throwable e))))
 
 (defn connect
   "Returns a AsynchronousSocketChannel to host and port."

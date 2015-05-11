@@ -25,8 +25,8 @@
       [_ a]
       nil)
     (failed
-      [e a]
-      (.printStackTrace ^Throwable e))))
+      [^Throwable e a]
+      (.printStackTrace e))))
 
 (defn connect
   "Returns a AsynchronousSocketChannel to host and port."

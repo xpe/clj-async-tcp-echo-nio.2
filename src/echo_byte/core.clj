@@ -2,7 +2,7 @@
   (:import
    [java.net InetSocketAddress]))
 
-(defn socket-address
+(defn ^InetSocketAddress socket-address
   "Returns a InetSocketAddress for supplied host and port."
   [^String host ^Integer port]
   (InetSocketAddress. host port))

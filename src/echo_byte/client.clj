@@ -40,11 +40,13 @@
 (defn read-handler
   [asc]
   (proxy [CompletionHandler] []
-    (completed [n buf]
-               (read asc)
-               (let [coll (seq (.array ^ByteBuffer buf))]
-                 (print (format "%d " (first coll)))))
-    (failed [e buf] (.printStackTrace ^Throwable e))))
+    (completed
+      [n ^ByteBuffer buf]
+      (read asc)
+      (let [coll (seq (.array buf))]
+        (print (format "%d " (first coll)))))
+    (failed [^Throwable e buf]
+      (.printStackTrace e))))
 
 (defn read
   [^AsynchronousSocketChannel asc]
@@ -54,8 +56,12 @@
 (defn write-handler
   [asc]
   (proxy [CompletionHandler] []
-    (completed [r a] (read asc))
-    (failed [e a] (.printStackTrace ^Throwable e))))
+    (completed
+      [r a]
+      (read asc))
+    (failed
+      [^Throwable e a]
+      (.printStackTrace e))))
 
 (defn write
   "Sends a ByteBuffer (buf) to connection. Returns nil."

@@ -11,9 +11,12 @@
   (:require
    [echo-byte.core :as core])
   (:import
-    [java.nio ByteBuffer]
-    [java.nio.channels AsynchronousSocketChannel
-     AsynchronousServerSocketChannel CompletionHandler]))
+   [java.nio
+    ByteBuffer]
+   [java.nio.channels
+    AsynchronousSocketChannel
+    AsynchronousServerSocketChannel
+    CompletionHandler]))
 
 (defn bind
   "Returns an AsynchronousServerSocketChannel."
@@ -27,20 +30,27 @@
 (defn write-handler
   [asc]
   (proxy [CompletionHandler] []
-    (completed [n a] (read asc))
-    (failed [e a] (.printStackTrace ^Throwable e))))
+    (completed
+      [n a]
+      (read asc))
+    (failed
+      [^Throwable e a]
+      (.printStackTrace e))))
 
 (defn read-handler
-  [asc]
+  [^AsynchronousSocketChannel asc]
   (proxy [CompletionHandler] []
-    (completed [n rbuf]
-               (let [wbuf (.duplicate rbuf)]
-                 (.rewind wbuf)
-                 (.write asc wbuf nil (write-handler asc))))
-    (failed [e rbuf] (.printStackTrace ^Throwable e))))
+    (completed
+      [n ^ByteBuffer rbuf]
+      (let [wbuf (.duplicate rbuf)]
+        (.rewind wbuf)
+        (.write asc wbuf nil (write-handler asc))))
+    (failed
+      [^Throwable e rbuf]
+      (.printStackTrace e))))
 
 (defn read
-  [asc]
+  [^AsynchronousSocketChannel asc]
   (let [buf (ByteBuffer/allocate 1)]
     (.read asc buf buf (read-handler asc))))
 
@@ -49,14 +59,16 @@
 (defn accept-handler
   [assc]
   (proxy [CompletionHandler] []
-    (completed [asc a]
-               (accept assc)
-               (read asc))
-    (failed [e a]
-            (accept assc)
-            (.printStackTrace ^Throwable e))))
+    (completed
+      [asc a]
+      (accept assc)
+      (read asc))
+    (failed
+      [^Throwable e a]
+      (accept assc)
+      (.printStackTrace e))))
 
 (defn accept
   "Accepts an AsynchronousServerSocketChannel. Returns nil."
-  [assc]
+  [^AsynchronousServerSocketChannel assc]
   (.accept assc nil (accept-handler assc)))
